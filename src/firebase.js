@@ -2,17 +2,33 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
+console.log('Firebase Config:', {
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
+});
+
 const firebaseConfig = {
-  apiKey: "AIzaSyA3EyeT4Pchpgzig2amX6zNW_G-LCt3zag",
-  authDomain: "daily-119aa.firebaseapp.com",
-  projectId: "daily-119aa",
-  storageBucket: "daily-119aa.firebasestorage.app",
-  messagingSenderId: "363216765954",
-  appId: "1:363216765954:web:f84739e9b610bd93f1131b",
-  measurementId: "G-L7W9PQ439N"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
+console.log('Firebase initialized successfully');
+
+// Initialize Firestore
+const db = getFirestore(app);
+console.log('Firestore initialized successfully');
+
+export { db };
 export const auth = getAuth(app); 
