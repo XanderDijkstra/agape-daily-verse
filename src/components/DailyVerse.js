@@ -24,7 +24,7 @@ function DailyVerse() {
     const selectedImage = backgroundImages[randomIndex];
     console.log('Setting background image:', selectedImage);
     setBackgroundImage(selectedImage);
-  }, []);
+  }, [backgroundImages]);
 
   useEffect(() => {
     const fetchDailyVerse = async () => {
