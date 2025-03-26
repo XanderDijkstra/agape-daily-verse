@@ -1,0 +1,92 @@
+.admin-dashboard {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.admin-dashboard h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.verses-list {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.verse-item {
+  background-color: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.verse-content {
+  flex: 1;
+}
+
+.verse-text {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.verse-reference {
+  font-size: 1rem;
+  color: #666;
+  font-style: italic;
+  margin-bottom: 0.5rem;
+}
+
+.verse-status {
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.verse-actions {
+  display: flex;
+  gap: 1rem;
+  margin-left: 1rem;
+}
+
+.approve-button,
+.delete-button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+}
+
+.approve-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.approve-button:hover {
+  background-color: #218838;
+}
+
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
+}
+
+.error {
+  color: #dc3545;
+  text-align: center;
+  padding: 1rem;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+} 
