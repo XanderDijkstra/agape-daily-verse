@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { collection, query, where, getDocs, orderBy, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
-import { FaTwitter, FaFacebook, FaInstagram } from 'react-icons/fa';
+import { FaInstagram } from 'react-icons/fa';
 import './DailyVerse.css';
 
 const DailyVerse = () => {
@@ -26,7 +26,7 @@ const DailyVerse = () => {
     const selectedImage = backgroundImages[randomIndex];
     console.log('Setting background image:', selectedImage);
     setBackgroundImage(selectedImage);
-  }, []);
+  }, [backgroundImages]);
 
   useEffect(() => {
     const fetchVerse = async () => {
