@@ -18,17 +18,23 @@ const firebaseConfig = {
   projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
   storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_FIREBASE_APP_ID,
-  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
+  appId: process.env.REACT_APP_FIREBASE_APP_ID
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-console.log('Firebase initialized successfully');
+let app;
+let db;
 
-// Initialize Firestore
-const db = getFirestore(app);
-console.log('Firestore initialized successfully');
+try {
+  if (!firebaseConfig.apiKey) {
+    throw new Error('Firebase configuration is missing. Please check your environment variables.');
+  }
+  app = initializeApp(firebaseConfig);
+  db = getFirestore(app);
+  console.log('Firebase initialized successfully');
+} catch (error) {
+  console.error('Error initializing Firebase:', error);
+}
 
 export { db };
 export const auth = getAuth(app); 

@@ -22,6 +22,9 @@ let app;
 let db;
 
 try {
+  if (!firebaseConfig.apiKey) {
+    throw new Error('Firebase configuration is missing. Please check your environment variables.');
+  }
   app = initializeApp(firebaseConfig);
   db = getFirestore(app);
   console.log('Firebase initialized successfully');
@@ -36,7 +39,7 @@ function App() {
   useEffect(() => {
     // Check if Firebase is initialized
     if (!app || !db) {
-      setError('Firebase initialization failed');
+      setError('Firebase initialization failed. Please check your configuration.');
       setIsLoading(false);
       return;
     }
@@ -54,7 +57,7 @@ function App() {
   if (error) {
     return (
       <div className="App">
-        <div className="error">Error: {error}</div>
+        <div className="error">{error}</div>
       </div>
     );
   }
