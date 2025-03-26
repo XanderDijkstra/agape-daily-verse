@@ -4,21 +4,21 @@ import { db } from '../firebase';
 import { FaInstagram } from 'react-icons/fa';
 import './DailyVerse.css';
 
+// Array of beautiful, aesthetic background images
+const backgroundImages = [
+  'https://images.pexels.com/photos/2387873/pexels-photo-2387873.jpeg', // Nature landscape
+  'https://images.pexels.com/photos/1287075/pexels-photo-1287075.jpeg', // Mountain lake
+  'https://images.pexels.com/photos/2387873/pexels-photo-2387873.jpeg', // Forest stream
+  'https://images.pexels.com/photos/1287075/pexels-photo-1287075.jpeg', // Mountain landscape
+  'https://images.pexels.com/photos/2387873/pexels-photo-2387873.jpeg', // Misty valley
+  'https://images.pexels.com/photos/1287075/pexels-photo-1287075.jpeg', // Lake view
+];
+
 const DailyVerse = () => {
   const [verse, setVerse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [backgroundImage, setBackgroundImage] = useState('');
-
-  // Array of beautiful, aesthetic background images
-  const backgroundImages = [
-    'https://images.pexels.com/photos/2387873/pexels-photo-2387873.jpeg', // Nature landscape
-    'https://images.pexels.com/photos/1287075/pexels-photo-1287075.jpeg', // Mountain lake
-    'https://images.pexels.com/photos/2387873/pexels-photo-2387873.jpeg', // Forest stream
-    'https://images.pexels.com/photos/1287075/pexels-photo-1287075.jpeg', // Mountain landscape
-    'https://images.pexels.com/photos/2387873/pexels-photo-2387873.jpeg', // Misty valley
-    'https://images.pexels.com/photos/1287075/pexels-photo-1287075.jpeg', // Lake view
-  ];
 
   // Set a random background image on component mount
   useEffect(() => {
@@ -26,7 +26,7 @@ const DailyVerse = () => {
     const selectedImage = backgroundImages[randomIndex];
     console.log('Setting background image:', selectedImage);
     setBackgroundImage(selectedImage);
-  }, [backgroundImages]);
+  }, []); // Empty dependency array since backgroundImages is now constant
 
   useEffect(() => {
     const fetchVerse = async () => {
