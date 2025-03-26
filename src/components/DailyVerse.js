@@ -22,17 +22,22 @@ const DailyVerse = () => {
 
   // Set a random background image on component mount
   useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * backgroundImages.length);
-    const selectedImage = backgroundImages[randomIndex];
-    console.log('Setting background image:', selectedImage);
-    setBackgroundImage(selectedImage);
+    try {
+      const randomIndex = Math.floor(Math.random() * backgroundImages.length);
+      const selectedImage = backgroundImages[randomIndex];
+      console.log('Setting background image:', selectedImage);
+      setBackgroundImage(selectedImage);
+    } catch (err) {
+      console.error('Error setting background image:', err);
+    }
   }, []); // Empty dependency array since backgroundImages is now constant
 
   useEffect(() => {
     const fetchVerse = async () => {
       try {
-        console.log('Fetching verse...');
+        console.log('Starting to fetch verse...');
         const today = new Date().toISOString().split('T')[0];
+        console.log('Today\'s date:', today);
         
         // First try to get a verse approved for today
         const todayQuery = query(
