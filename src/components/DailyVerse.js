@@ -1,133 +1,118 @@
 import React, { useState, useEffect } from 'react';
 import { collection, query, where, getDocs, orderBy, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
-import { FaInstagram } from 'react-icons/fa';
+import { FaTwitter, FaFacebook, FaInstagram } from 'react-icons/fa';
+import './DailyVerse.css';
 
-function DailyVerse() {
-  const [verse, setVerse] = useState({ text: '', reference: '' });
+const DailyVerse = () => {
+  const [verse, setVerse] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [backgroundImage, setBackgroundImage] = useState('');
-
-  // Array of beautiful, aesthetic background images
-  const backgroundImages = [
-    'https://images.pexels.com/photos/2387873/pexels-photo-2387873.jpeg', // Nature landscape
-    'https://images.pexels.com/photos/1287075/pexels-photo-1287075.jpeg', // Mountain lake
-    'https://images.pexels.com/photos/1287075/pexels-photo-1287075.jpeg', // Forest stream
-    'https://images.pexels.com/photos/2387873/pexels-photo-2387873.jpeg', // Mountain landscape
-    'https://images.pexels.com/photos/2387873/pexels-photo-2387873.jpeg', // Misty valley
-    'https://images.pexels.com/photos/1287075/pexels-photo-1287075.jpeg', // Lake view
-  ];
-
-  // Set a random background image on component mount
-  useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * backgroundImages.length);
-    const selectedImage = backgroundImages[randomIndex];
-    console.log('Setting background image:', selectedImage);
-    setBackgroundImage(selectedImage);
-  }, [backgroundImages]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchDailyVerse = async () => {
+    const fetchVerse = async () => {
       try {
+        console.log('Fetching verse...');
         const today = new Date().toISOString().split('T')[0];
-        const versesRef = collection(db, 'verses');
         
-        // First try to get today's verse
-        let q = query(
-          versesRef,
-          where('date', '==', today),
-          where('approved', '==', true)
+        // First try to get a verse approved for today
+        const todayQuery = query(
+          collection(db, 'verses'),
+          where('approved', '==', true),
+          where('date', '==', today)
         );
         
-        let querySnapshot = await getDocs(q);
+        const todaySnapshot = await getDocs(todayQuery);
+        
+        if (!todaySnapshot.empty) {
+          console.log('Found verse for today');
+          setVerse(todaySnapshot.docs[0].data());
+          setLoading(false);
+          return;
+        }
         
         // If no verse for today, get a random approved verse
-        if (querySnapshot.empty) {
-          q = query(
-            versesRef,
-            where('approved', '==', true),
-            orderBy('submittedAt')
-          );
-          querySnapshot = await getDocs(q);
+        console.log('No verse for today, getting random verse');
+        const randomQuery = query(
+          collection(db, 'verses'),
+          where('approved', '==', true),
+          orderBy('date')
+        );
+        
+        const randomSnapshot = await getDocs(randomQuery);
+        
+        if (!randomSnapshot.empty) {
+          const randomIndex = Math.floor(Math.random() * randomSnapshot.docs.length);
+          const selectedVerse = randomSnapshot.docs[randomIndex];
           
-          if (!querySnapshot.empty) {
-            // Get a random verse from the approved verses
-            const verses = querySnapshot.docs.map(doc => ({
-              id: doc.id,
-              ...doc.data()
-            }));
-            const randomIndex = Math.floor(Math.random() * verses.length);
-            const randomVerse = verses[randomIndex];
-            
-            // Update the verse's date to today
-            const verseRef = doc(db, 'verses', randomVerse.id);
-            await updateDoc(verseRef, {
-              date: today
-            });
-            
-            setVerse({
-              text: randomVerse.text,
-              reference: randomVerse.reference
-            });
-          } else {
-            // Fallback verse if no approved verses exist
-            setVerse({ 
-              text: 'For God so loved the world, that he gave his only Son, that whoever believes in him should not perish but have eternal life.', 
-              reference: 'John 3:16' 
-            });
-          }
+          // Update the verse's date to today
+          await updateDoc(doc(db, 'verses', selectedVerse.id), {
+            date: today
+          });
+          
+          setVerse(selectedVerse.data());
         } else {
-          // Use today's verse
-          const data = querySnapshot.docs[0].data();
+          console.log('No approved verses found, using fallback');
           setVerse({
-            text: data.text,
-            reference: data.reference
+            text: "For God so loved the world, that he gave his only Son, that whoever believes in him should not perish but have eternal life.",
+            reference: "John 3:16"
           });
         }
-      } catch (error) {
-        console.error('Error in fetchDailyVerse:', error);
-        setVerse({ 
-          text: 'For God so loved the world, that he gave his only Son, that whoever believes in him should not perish but have eternal life.', 
-          reference: 'John 3:16' 
-        });
+      } catch (err) {
+        console.error('Error fetching verse:', err);
+        setError('Failed to load verse. Please try again later.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchDailyVerse();
+    fetchVerse();
   }, []);
 
   if (loading) {
-    return <div className="loading">Loading...</div>;
+    return (
+      <div className="daily-verse">
+        <div className="loading">Loading...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="daily-verse">
+        <div className="error">{error}</div>
+      </div>
+    );
+  }
+
+  if (!verse) {
+    return (
+      <div className="daily-verse">
+        <div className="error">No verse available</div>
+      </div>
+    );
   }
 
   return (
-    <>
-      <div 
-        className="background-image" 
-        style={{ 
-          backgroundImage: `url(${backgroundImage})`,
-          opacity: 1
-        }}
-      />
-      <div className="background-overlay" />
-      <div className="daily-verse">
-        <div className="verse-container">
-          <p className="verse-text">{verse.text}</p>
-          <p className="verse-reference">{verse.reference}</p>
-        </div>
+    <div className="daily-verse">
+      <div className="brand-name">AGAPE</div>
+      <div className="verse-content">
+        <p className="verse-text">{verse.text}</p>
+        <p className="verse-reference">{verse.reference}</p>
       </div>
-      <div className="bottom-bar">
-        <a href="https://agape-wear.com" target="_blank" rel="noopener noreferrer" className="brand-name">
-          AGAPE
+      <div className="social-icons">
+        <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`"${verse.text}" - ${verse.reference}`)}`} target="_blank" rel="noopener noreferrer">
+          <FaTwitter />
         </a>
-        <a href="https://instagram.com/agapewear" target="_blank" rel="noopener noreferrer" className="social-icon">
+        <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noopener noreferrer">
+          <FaFacebook />
+        </a>
+        <a href={`https://www.instagram.com/share?url=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noopener noreferrer">
           <FaInstagram />
         </a>
       </div>
-    </>
+    </div>
   );
-}
+};
 
 export default DailyVerse; 
