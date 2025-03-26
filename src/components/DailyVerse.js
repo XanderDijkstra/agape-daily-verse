@@ -8,6 +8,25 @@ const DailyVerse = () => {
   const [verse, setVerse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [backgroundImage, setBackgroundImage] = useState('');
+
+  // Array of beautiful, aesthetic background images
+  const backgroundImages = [
+    'https://images.pexels.com/photos/2387873/pexels-photo-2387873.jpeg', // Nature landscape
+    'https://images.pexels.com/photos/1287075/pexels-photo-1287075.jpeg', // Mountain lake
+    'https://images.pexels.com/photos/2387873/pexels-photo-2387873.jpeg', // Forest stream
+    'https://images.pexels.com/photos/1287075/pexels-photo-1287075.jpeg', // Mountain landscape
+    'https://images.pexels.com/photos/2387873/pexels-photo-2387873.jpeg', // Misty valley
+    'https://images.pexels.com/photos/1287075/pexels-photo-1287075.jpeg', // Lake view
+  ];
+
+  // Set a random background image on component mount
+  useEffect(() => {
+    const randomIndex = Math.floor(Math.random() * backgroundImages.length);
+    const selectedImage = backgroundImages[randomIndex];
+    console.log('Setting background image:', selectedImage);
+    setBackgroundImage(selectedImage);
+  }, []);
 
   useEffect(() => {
     const fetchVerse = async () => {
@@ -22,6 +41,7 @@ const DailyVerse = () => {
           where('date', '==', today)
         );
         
+        console.log('Executing today query...');
         const todaySnapshot = await getDocs(todayQuery);
         
         if (!todaySnapshot.empty) {
@@ -39,6 +59,7 @@ const DailyVerse = () => {
           orderBy('date')
         );
         
+        console.log('Executing random query...');
         const randomSnapshot = await getDocs(randomQuery);
         
         if (!randomSnapshot.empty) {
@@ -60,6 +81,11 @@ const DailyVerse = () => {
         }
       } catch (err) {
         console.error('Error fetching verse:', err);
+        console.error('Error details:', {
+          message: err.message,
+          code: err.code,
+          stack: err.stack
+        });
         setError('Failed to load verse. Please try again later.');
       } finally {
         setLoading(false);
@@ -94,24 +120,30 @@ const DailyVerse = () => {
   }
 
   return (
-    <div className="daily-verse">
-      <div className="brand-name">AGAPE</div>
-      <div className="verse-content">
-        <p className="verse-text">{verse.text}</p>
-        <p className="verse-reference">{verse.reference}</p>
+    <>
+      <div 
+        className="background-image" 
+        style={{ 
+          backgroundImage: `url(${backgroundImage})`,
+          opacity: 1
+        }}
+      />
+      <div className="background-overlay" />
+      <div className="daily-verse">
+        <div className="verse-container">
+          <p className="verse-text">{verse.text}</p>
+          <p className="verse-reference">{verse.reference}</p>
+        </div>
       </div>
-      <div className="social-icons">
-        <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`"${verse.text}" - ${verse.reference}`)}`} target="_blank" rel="noopener noreferrer">
-          <FaTwitter />
+      <div className="bottom-bar">
+        <a href="https://agape-wear.com" target="_blank" rel="noopener noreferrer" className="brand-name">
+          AGAPE
         </a>
-        <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noopener noreferrer">
-          <FaFacebook />
-        </a>
-        <a href={`https://www.instagram.com/share?url=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noopener noreferrer">
+        <a href="https://instagram.com/agapewear" target="_blank" rel="noopener noreferrer" className="social-icon">
           <FaInstagram />
         </a>
       </div>
-    </div>
+    </>
   );
 };
 
